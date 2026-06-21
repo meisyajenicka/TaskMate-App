@@ -10,7 +10,7 @@ const Dashboard = () => {
     const userData = JSON.parse(localStorage.getItem('user') || '{"name":"Pengguna"}')
     setUser(userData)
     
-    // Baca data tasks dari localStorage (JANGAN diubah!)
+    // Baca data tasks dari localStorage 
     const savedTasks = localStorage.getItem('tasks')
     if (savedTasks) {
       try {
