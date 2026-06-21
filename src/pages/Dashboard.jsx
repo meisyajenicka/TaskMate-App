@@ -4,69 +4,59 @@ import { Link } from 'react-router-dom'
 const Dashboard = () => {
   const [tasks, setTasks] = useState([])
   const [user, setUser] = useState({ name: 'Pengguna' })
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Ambil data user dari localStorage
+    // Baca data user
     const userData = JSON.parse(localStorage.getItem('user') || '{"name":"Pengguna"}')
     setUser(userData)
-
-    // Ambil data tugas dari localStorage
-    const savedTasks = JSON.parse(localStorage.getItem('tasks') || '[]')
-    setTasks(savedTasks)
-    setLoading(false)
+    
+    // Baca data tasks dari localStorage (JANGAN diubah!)
+    const savedTasks = localStorage.getItem('tasks')
+    if (savedTasks) {
+      try {
+        const parsed = JSON.parse(savedTasks)
+        console.log('📊 Dashboard membaca tasks:', parsed)
+        setTasks(parsed)
+      } catch (e) {
+        console.log('❌ Error parsing tasks di Dashboard:', e)
+        setTasks([])
+      }
+    } else {
+      setTasks([])
+    }
   }, [])
 
-  const totalTasks = tasks.length
-  const completedTasks = tasks.filter(task => task.completed).length
-  const pendingTasks = totalTasks - completedTasks
-  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
-
-  if (loading) {
-    return (
-      <div style={styles.container}>
-        <div style={styles.loading}>Memuat dashboard...</div>
-      </div>
-    )
-  }
+  const total = tasks.length
+  const completed = tasks.filter(t => t.completed).length
+  const pending = total - completed
+  const rate = total > 0 ? Math.round((completed / total) * 100) : 0
 
   return (
     <div style={styles.container}>
-      <div style={styles.welcome}>
-        <h1 style={styles.title}>👋 Selamat Datang, {user.name}!</h1>
-        <p style={styles.subtitle}>Ini adalah ringkasan aktivitas TaskMate-mu</p>
-      </div>
+      <h1 style={styles.title}>👋 Selamat Datang, {user.name}!</h1>
+      <p style={styles.subtitle}>Ringkasan aktivitas TaskMate-mu</p>
 
       <div style={styles.statsGrid}>
-        <div style={{...styles.statCard, ...styles.statCard1}}>
-          <span style={styles.statIcon}>📋</span>
-          <h3 style={styles.statNumber}>{totalTasks}</h3>
-          <p style={styles.statLabel}>Total Tugas</p>
+        <div style={{...styles.statCard, borderTop: '4px solid #3498db'}}>
+          <h3 style={styles.statNumber}>{total}</h3>
+          <p style={styles.statLabel}>📋 Total Tugas</p>
         </div>
-        <div style={{...styles.statCard, ...styles.statCard2}}>
-          <span style={styles.statIcon}>✅</span>
-          <h3 style={styles.statNumber}>{completedTasks}</h3>
-          <p style={styles.statLabel}>Selesai</p>
+        <div style={{...styles.statCard, borderTop: '4px solid #2ecc71'}}>
+          <h3 style={styles.statNumber}>{completed}</h3>
+          <p style={styles.statLabel}>✅ Selesai</p>
         </div>
-        <div style={{...styles.statCard, ...styles.statCard3}}>
-          <span style={styles.statIcon}>⏳</span>
-          <h3 style={styles.statNumber}>{pendingTasks}</h3>
-          <p style={styles.statLabel}>Belum Selesai</p>
+        <div style={{...styles.statCard, borderTop: '4px solid #f39c12'}}>
+          <h3 style={styles.statNumber}>{pending}</h3>
+          <p style={styles.statLabel}>⏳ Belum Selesai</p>
         </div>
-        <div style={{...styles.statCard, ...styles.statCard4}}>
-          <span style={styles.statIcon}>📊</span>
-          <h3 style={styles.statNumber}>{completionRate}%</h3>
-          <p style={styles.statLabel}>Tingkat Penyelesaian</p>
+        <div style={{...styles.statCard, borderTop: '4px solid #9b59b6'}}>
+          <h3 style={styles.statNumber}>{rate}%</h3>
+          <p style={styles.statLabel}>📊 Penyelesaian</p>
         </div>
       </div>
 
       <div style={styles.actions}>
-        <Link to="/tasks" style={styles.primaryBtn}>
-          📝 Kelola Tugas
-        </Link>
-        <p style={styles.quote}>
-          "Produktivitas bukan tentang melakukan banyak hal, tapi tentang melakukan hal yang benar."
-        </p>
+        <Link to="/tasks" style={styles.primaryBtn}>📝 Kelola Tugas</Link>
       </div>
     </div>
   )
@@ -78,17 +68,7 @@ const styles = {
     margin: '0 auto',
     padding: '2rem 1rem',
   },
-  loading: {
-    textAlign: 'center',
-    padding: '3rem',
-    fontSize: '1.2rem',
-    color: '#7f8c8d',
-  },
-  welcome: {
-    marginBottom: '2rem',
-  },
   title: {
-    margin: '0',
     color: '#2c3e50',
     fontSize: '2rem',
   },
@@ -96,12 +76,13 @@ const styles = {
     color: '#7f8c8d',
     fontSize: '1.1rem',
     marginTop: '0.3rem',
+    marginBottom: '2rem',
   },
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '1.2rem',
-    marginBottom: '2.5rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '1rem',
+    marginBottom: '2rem',
   },
   statCard: {
     background: 'white',
@@ -109,16 +90,6 @@ const styles = {
     borderRadius: '12px',
     textAlign: 'center',
     boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    transition: 'transform 0.2s',
-  },
-  statCard1: { borderTop: '4px solid #3498db' },
-  statCard2: { borderTop: '4px solid #2ecc71' },
-  statCard3: { borderTop: '4px solid #f39c12' },
-  statCard4: { borderTop: '4px solid #9b59b6' },
-  statIcon: {
-    fontSize: '2rem',
-    display: 'block',
-    marginBottom: '0.5rem',
   },
   statNumber: {
     fontSize: '2.5rem',
@@ -127,7 +98,6 @@ const styles = {
   },
   statLabel: {
     color: '#7f8c8d',
-    margin: '0',
     fontSize: '0.95rem',
   },
   actions: {
@@ -146,13 +116,6 @@ const styles = {
     borderRadius: '8px',
     fontSize: '1.1rem',
     fontWeight: '600',
-    transition: 'background 0.3s',
-  },
-  quote: {
-    color: '#7f8c8d',
-    fontStyle: 'italic',
-    marginTop: '1.2rem',
-    fontSize: '1rem',
   },
 }
 

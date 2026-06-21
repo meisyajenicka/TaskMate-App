@@ -1,4 +1,11 @@
 const TaskItem = ({ task, onToggle, onDelete }) => {
+  if (!task) {
+    console.log('⚠️ [TaskItem] Task tidak ada!')
+    return null
+  }
+
+  console.log('📌 [TaskItem] Render task:', task.id, task.text)
+
   return (
     <div style={{
       ...styles.item,
@@ -7,24 +14,19 @@ const TaskItem = ({ task, onToggle, onDelete }) => {
       <div style={styles.left}>
         <input
           type="checkbox"
-          checked={task.completed}
+          checked={task.completed || false}
           onChange={() => onToggle(task.id)}
           style={styles.checkbox}
         />
-        <div>
-          <span style={{
-            ...styles.text,
-            ...(task.completed ? styles.textCompleted : {})
-          }}>
-            {task.text}
-          </span>
-          <span style={styles.date}>📅 {task.createdAt}</span>
-        </div>
+        <span style={{
+          ...styles.text,
+          ...(task.completed ? styles.textCompleted : {})
+        }}>
+          {task.text || '(Tidak ada teks)'}
+        </span>
+        <span style={styles.date}>📅 {task.createdAt || '-'}</span>
       </div>
-      <button
-        onClick={() => onDelete(task.id)}
-        style={styles.deleteBtn}
-      >
+      <button onClick={() => onDelete(task.id)} style={styles.deleteBtn}>
         ✕
       </button>
     </div>
@@ -40,7 +42,6 @@ const styles = {
     background: 'white',
     borderRadius: '8px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-    transition: 'transform 0.2s, box-shadow 0.2s',
   },
   completed: {
     background: '#f8f9fa',
@@ -61,7 +62,6 @@ const styles = {
   text: {
     fontSize: '1rem',
     color: '#2c3e50',
-    wordBreak: 'break-word',
   },
   textCompleted: {
     textDecoration: 'line-through',
@@ -70,7 +70,6 @@ const styles = {
   date: {
     fontSize: '0.75rem',
     color: '#95a5a6',
-    marginLeft: '10px',
   },
   deleteBtn: {
     background: 'none',
@@ -80,7 +79,6 @@ const styles = {
     cursor: 'pointer',
     padding: '0 0.5rem',
     fontWeight: 'bold',
-    transition: 'transform 0.2s',
   },
 }
 

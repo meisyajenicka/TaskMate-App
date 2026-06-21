@@ -11,7 +11,6 @@ body {
   line-height: 1.6;
 }
 
-/* Hover effects */
 button:hover {
   opacity: 0.85;
   transform: scale(1.02);
@@ -19,41 +18,4 @@ button:hover {
 
 button:active {
   transform: scale(0.98);
-}
-
-/* Link hover */
-a:hover {
-  opacity: 0.8;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #bdc3c7;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #95a5a6;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .taskmate-nav {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .taskmate-nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
 }

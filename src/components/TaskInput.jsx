@@ -5,10 +5,14 @@ const TaskInput = ({ onAdd }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log('📝 Form submitted, input:', input)
+    
     if (input.trim() === '') {
       alert('Tugas tidak boleh kosong!')
       return
     }
+    
+    console.log('✅ Memanggil onAdd dengan:', input.trim())
     onAdd(input.trim())
     setInput('')
   }
@@ -18,13 +22,14 @@ const TaskInput = ({ onAdd }) => {
       <input
         type="text"
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={(e) => {
+          console.log('✏️ Input berubah:', e.target.value)
+          setInput(e.target.value)
+        }}
         placeholder="Tulis tugas baru..."
         style={styles.input}
       />
-      <button type="submit" style={styles.button}>
-        ➕ Tambah
-      </button>
+      <button type="submit" style={styles.button}>➕ Tambah</button>
     </form>
   )
 }
@@ -41,7 +46,6 @@ const styles = {
     border: '2px solid #e0e0e0',
     borderRadius: '8px',
     fontSize: '1rem',
-    transition: 'border-color 0.3s',
     outline: 'none',
   },
   button: {
@@ -53,7 +57,6 @@ const styles = {
     fontSize: '1rem',
     fontWeight: '600',
     cursor: 'pointer',
-    transition: 'background 0.3s',
     whiteSpace: 'nowrap',
   },
 }

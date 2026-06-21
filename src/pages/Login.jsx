@@ -5,44 +5,25 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
-
-    // Simulasi login (nanti bisa diganti dengan API real)
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      if (email.trim() && password.trim()) {
-        localStorage.setItem('token', 'taskmate-jwt-token')
-        localStorage.setItem('user', JSON.stringify({ email, name: 'Pengguna TaskMate' }))
-        navigate('/dashboard')
-      } else {
-        setError('Email dan password harus diisi!')
-      }
-    } catch (err) {
-      setError('Login gagal. Silakan coba lagi.')
-    } finally {
-      setLoading(false)
+    if (email.trim() && password.trim()) {
+      localStorage.setItem('token', 'mock-token')
+      localStorage.setItem('user', JSON.stringify({ name: 'Pengguna TaskMate' }))
+      navigate('/dashboard')
+    } else {
+      setError('Email dan password harus diisi!')
     }
   }
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <div style={styles.header}>
-          <span style={styles.icon}>🔐</span>
-          <h2 style={styles.title}>Login TaskMate</h2>
-          <p style={styles.subtitle}>Kelola tugas dengan teman terbaikmu</p>
-        </div>
-        
+        <h2 style={styles.title}>🔐 Login TaskMate</h2>
         {error && <div style={styles.error}>{error}</div>}
-        
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <form onSubmit={handleSubmit}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Email</label>
             <input
@@ -63,15 +44,9 @@ const Login = () => {
               style={styles.input}
             />
           </div>
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Memproses...' : 'Login'}
-          </button>
+          <button type="submit" style={styles.button}>Login</button>
         </form>
-        
-        <p style={styles.footer}>
-          Belum punya akun? <Link to="/register" style={styles.link}>Register</Link>
-        </p>
-        <p style={styles.hint}>* Masukkan email & password apa saja untuk login</p>
+        <p style={styles.footer}>Belum punya akun? <Link to="/register" style={styles.link}>Register</Link></p>
       </div>
     </div>
   )
@@ -93,24 +68,10 @@ const styles = {
     width: '100%',
     maxWidth: '400px',
   },
-  header: {
+  title: {
     textAlign: 'center',
     marginBottom: '1.5rem',
-  },
-  icon: {
-    fontSize: '3rem',
-    display: 'block',
-    marginBottom: '0.5rem',
-  },
-  title: {
-    margin: '0',
     color: '#2c3e50',
-    fontSize: '1.8rem',
-  },
-  subtitle: {
-    color: '#7f8c8d',
-    fontSize: '0.9rem',
-    marginTop: '0.3rem',
   },
   error: {
     background: '#f8d7da',
@@ -120,30 +81,25 @@ const styles = {
     marginBottom: '1rem',
     textAlign: 'center',
   },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.2rem',
-  },
   formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.4rem',
+    marginBottom: '1rem',
   },
   label: {
+    display: 'block',
     fontWeight: '600',
     color: '#34495e',
-    fontSize: '0.95rem',
+    marginBottom: '0.3rem',
   },
   input: {
+    width: '100%',
     padding: '0.8rem',
     border: '2px solid #e0e0e0',
     borderRadius: '8px',
     fontSize: '1rem',
-    transition: 'border-color 0.3s',
     outline: 'none',
   },
   button: {
+    width: '100%',
     padding: '0.8rem',
     background: '#3498db',
     color: 'white',
@@ -152,7 +108,7 @@ const styles = {
     fontSize: '1.1rem',
     fontWeight: '600',
     cursor: 'pointer',
-    transition: 'background 0.3s',
+    marginTop: '0.5rem',
   },
   footer: {
     textAlign: 'center',
@@ -164,12 +120,6 @@ const styles = {
     textDecoration: 'none',
     fontWeight: '600',
   },
-  hint: {
-    textAlign: 'center',
-    marginTop: '0.8rem',
-    color: '#bdc3c7',
-    fontSize: '0.8rem',
-  }
 }
 
 export default Login

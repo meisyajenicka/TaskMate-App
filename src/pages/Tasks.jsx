@@ -4,20 +4,40 @@ import TaskList from '../components/TaskList'
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Ambil data dari localStorage saat pertama kali render
+  // BACA data dari localStorage
   useEffect(() => {
-    const savedTasks = JSON.parse(localStorage.getItem('tasks') || '[]')
-    setTasks(savedTasks)
-  }, [])
+    console.log('🔍 [Tasks] Membaca data dari localStorage...')
+    try {
+      const savedTasks = localStorage.getItem('tasks')
+      console.log('📦 [Tasks] Data mentah:', savedTasks)
+      
+      if (savedTasks) {
+        const parsed = JSON.parse(savedTasks)
+        console.log('✅ [Tasks] Data berhasil di-parse:', parsed)
+        setTasks(parsed)
+      } else {
+        console.log('❌ [Tasks] Tidak ada data di localStorage')
+        setTasks([])
+      }
+    } catch (error) {
+      console.error('❌ [Tasks] Error:', error)
+      setTasks([])
+    }
+    setIsLoading(false)
+  }, [])  // ← HANYA JALAN 1 KALI!
 
-  // Simpan ke localStorage setiap kali tasks berubah
+  // SIMPAN ke localStorage
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks))
-  }, [tasks])
+    if (!isLoading) {
+      console.log('💾 [Tasks] Menyimpan ke localStorage:', tasks)
+      localStorage.setItem('tasks', JSON.stringify(tasks))
+    }
+  }, [tasks, isLoading])
 
-  // Tambah tugas baru
   const addTask = (text) => {
+    console.log('➕ [Tasks] Menambah tugas:', text)
     const newTask = {
       id: Date.now(),
       text: text,
@@ -28,51 +48,53 @@ const Tasks = () => {
         year: 'numeric' 
       })
     }
-    setTasks([newTask, ...tasks])
+    setTasks(prev => {
+      const newTasks = [newTask, ...prev]
+      console.log('📝 [Tasks] State baru:', newTasks)
+      return newTasks
+    })
   }
 
-  // Toggle status selesai
   const toggleTask = (id) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    ))
+    console.log('🔄 [Tasks] Toggle tugas ID:', id)
+    setTasks(prev => {
+      const newTasks = prev.map(task => 
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+      console.log('📝 [Tasks] State setelah toggle:', newTasks)
+      return newTasks
+    })
   }
 
-  // Hapus tugas
   const deleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id))
+    console.log('🗑️ [Tasks] Hapus tugas ID:', id)
+    setTasks(prev => {
+      const newTasks = prev.filter(task => task.id !== id)
+      console.log('📝 [Tasks] State setelah hapus:', newTasks)
+      return newTasks
+    })
   }
 
-  // Hapus semua tugas yang selesai
-  const clearCompleted = () => {
-    setTasks(tasks.filter(task => !task.completed))
-  }
+  const total = tasks.length
+  const completed = tasks.filter(t => t.completed).length
 
-  const totalTasks = tasks.length
-  const completedTasks = tasks.filter(task => task.completed).length
+  console.log('📊 [Tasks] Render, jumlah tugas:', total)
+
+  if (isLoading) {
+    return <div style={{textAlign:'center', padding:'2rem'}}>Memuat tugas...</div>
+  }
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <div>
-          <h1 style={styles.title}>📝 Manajemen Tugas</h1>
-          <p style={styles.subtitle}>
-            {totalTasks} tugas total • {completedTasks} selesai
-          </p>
-        </div>
-        {completedTasks > 0 && (
-          <button onClick={clearCompleted} style={styles.clearBtn}>
-            Hapus Selesai
-          </button>
-        )}
-      </div>
-
+      <h1 style={styles.title}>📝 Manajemen Tugas</h1>
+      <p style={styles.subtitle}>{total} tugas total • {completed} selesai</p>
+      
       <TaskInput onAdd={addTask} />
       
       {tasks.length === 0 ? (
         <div style={styles.empty}>
-          <span style={styles.emptyIcon}>📭</span>
-          <p style={styles.emptyText}>Belum ada tugas. Yuk tambahkan tugas!</p>
+          <span style={{fontSize:'3rem', display:'block'}}>📭</span>
+          Belum ada tugas. Yuk tambahkan!
         </div>
       ) : (
         <TaskList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
@@ -87,50 +109,21 @@ const styles = {
     margin: '0 auto',
     padding: '2rem 1rem',
   },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1.5rem',
-    flexWrap: 'wrap',
-    gap: '1rem',
-  },
   title: {
-    margin: '0',
     color: '#2c3e50',
     fontSize: '2rem',
   },
   subtitle: {
-    margin: '0.3rem 0 0 0',
     color: '#7f8c8d',
-    fontSize: '0.95rem',
-  },
-  clearBtn: {
-    padding: '0.5rem 1.2rem',
-    background: '#e74c3c',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    fontSize: '0.9rem',
-    fontWeight: '500',
-    transition: 'background 0.3s',
+    marginBottom: '1.5rem',
   },
   empty: {
     textAlign: 'center',
     padding: '3rem',
     background: 'white',
     borderRadius: '12px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-  },
-  emptyIcon: {
-    fontSize: '3rem',
-    display: 'block',
-  },
-  emptyText: {
     color: '#bdc3c7',
     fontSize: '1.1rem',
-    marginTop: '0.5rem',
   },
 }
 

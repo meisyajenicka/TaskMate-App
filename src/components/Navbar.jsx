@@ -12,17 +12,13 @@ const Navbar = () => {
   return (
     <nav style={styles.nav}>
       <div style={styles.container}>
-        <Link to="/" style={styles.brand}>
-          <span style={styles.brandIcon}>📋</span> TaskMate
-        </Link>
+        <Link to="/" style={styles.brand}>📋 TaskMate</Link>
         <div style={styles.links}>
           {isAuthenticated ? (
             <>
               <Link to="/dashboard" style={styles.link}>Dashboard</Link>
               <Link to="/tasks" style={styles.link}>Tugas</Link>
-              <button onClick={handleLogout} style={styles.logoutBtn}>
-                Logout
-              </button>
+              <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
             </>
           ) : (
             <>
@@ -54,12 +50,6 @@ const styles = {
     fontSize: '1.8rem',
     textDecoration: 'none',
     fontWeight: 'bold',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  brandIcon: {
-    fontSize: '2rem',
   },
   links: {
     display: 'flex',
@@ -71,7 +61,6 @@ const styles = {
     textDecoration: 'none',
     padding: '0.5rem 1rem',
     borderRadius: '6px',
-    transition: 'background 0.3s, color 0.3s',
   },
   logoutBtn: {
     background: '#e74c3c',
@@ -81,8 +70,6 @@ const styles = {
     borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '1rem',
-    fontWeight: '500',
-    transition: 'background 0.3s',
   },
 }
 
